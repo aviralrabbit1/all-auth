@@ -1,21 +1,21 @@
 # Node backend
 
-1. Initialisation
+1. Initial Setup
 
+<details>
+<summary>
+1.1 Initialisation
+</summary>
+
+- using -
 ```sh
 bun init -y
 ```
 
-To install dependencies:
+- install devDependencies, and setup `scripts` in `package.json`
 
-```bash
-bun install
+```sh
+bun add typescript @types/node ts-node nodemon --save-dev
 ```
 
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.2.9. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+</details>
