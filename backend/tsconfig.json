@@ -19,7 +19,7 @@
     // and npm install -D @types/node
 
     // Bundler mode
-    // "moduleResolution": "bundler", //works only for module:esnext
+    "moduleResolution": "bundler", //works only for module:esnext
     "allowImportingTsExtensions": true,
     "noEmit": true,
 
