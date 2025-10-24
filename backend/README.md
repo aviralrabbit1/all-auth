@@ -13,7 +13,7 @@ bun init -y
 ```
 
 ```sh
-bun add typescript @types/node ts-node nodemon --save-dev
+bun add typescript @types/node nodemon --save-dev
 ```
 </details>
 
@@ -45,6 +45,35 @@ bun add dotenv
 ```ts
 import dotenv from 'dotenv';
 dotenv.config();
+```
+
+- or we can create a separate file `src/common/utils` to create utility function 
+```ts
+export const getEnv = (key: string, defaultValue: string = ""): string => {
+  const value = process.env[key];
+  if (value === undefined) {
+    if(defaultValue){
+      return  defaultValue;
+    }
+    throw new Error(`Environment variable ${key} is not set`);
+  }
+  return value;
+}
+```
+
+- to use in `src/config/app.config.ts` for storing logic for extracting `.env` secrets. 
+
+```ts
+import { getEnv } from "../common/utils/get-env";
+
+const appConfig = () => ({
+  NODE_ENV: getEnv("NODE_ENV", "development"),
+  PORT: getEnv("PORT", "5000"),
+  ...
+});
+
+export const config = appConfig();
+
 ```
 
 </details>
