@@ -124,3 +124,62 @@ bun add cors cookie-parser --save-dev @types/cors cookie-parser
   ```
 
 </details>
+
+<details>
+<summary>
+2.2 Mongoose
+</summary>
+
+- Install it with
+```sh
+bun add mongoose
+```
+
+- create `src/database/models/database.ts`
+```ts
+import mongoose from "mongoose";
+const connectDatabase = async () => {
+  try {
+    await mongoose.connect(config.MONGODB_URI);
+    console.log("MongoDB connected successfully");    
+  } catch (error) {
+    console.log("Erro connecting to database");
+    process.exit(1);
+  }
+}
+```
+
+- In `src/index.ts`
+```ts
+app.listen(config.PORT, async () => {
+  await connectDatabase();
+})
+```
+
+</details>
+
+## 3. Error Handling
+
+<details>
+<summary>
+3.1 Middleware
+</summary>
+
+- For error handling, create `src/middlewares/errorHandler.ts`
+```ts
+import { ErrorRequestHandler } from "express";
+export const ErrorHandler:ErrorRequestHandler = (error, req, res, next): any => {
+  console.error(`Error occurred: ${error.message} on path ${req.path}`);
+  return res.status(500).json({
+    message: "Internal Server Error",
+    error: error?.message || "Something went wrong",
+  });
+}
+```
+
+- and use it in `src/index.ts`
+```ts
+app.use(ErrorHandler);
+```
+
+</details>

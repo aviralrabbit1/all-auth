@@ -5,6 +5,8 @@ import express, { Request, Response} from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { config } from './config/app.config';
+import connectDatabase from './database/models/database';
+import { ErrorHandler } from './middlewares/errorHandler';
 
 const app = express();
 // const BASE_PATH = config.BASE_PATH;
@@ -25,6 +27,9 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+app.use(ErrorHandler);
+
 app.listen(config.PORT, async () => {
   console.log("Server listening on PORT: ", config.PORT);
+  await connectDatabase();
 })
