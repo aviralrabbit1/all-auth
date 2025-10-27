@@ -53,7 +53,7 @@ export const getEnv = (key: string, defaultValue: string = ""): string => {
   const value = process.env[key];
   if (value === undefined) {
     if(defaultValue){
-      return  defaultValue;
+      return defaultValue;
     }
     throw new Error(`Environment variable ${key} is not set`);
   }
@@ -96,6 +96,90 @@ bun add express --save-dev @types/express
 
 ```sh
 bun add cors cookie-parser --save-dev @types/cors cookie-parser
+```
+
+</details>
+
+## 2. Database
+
+<details>
+<summary>
+2.1 MongoDB
+</summary>
+
+- Visit [MongoDb](https://www.mongodb.com/) and Create a new cluster, `cluster-name` and database.
+- Connect with the cluster using preferred method. 
+- I connected directly with `vs code` using the `connection string`.
+- Add an environment variable `MONGO_URI` in `.env` file with the value=`MongoDB connection string` with the format
+  ```.env
+  MONGODB_URI="mongodb+srv://<username>:<password>@<cluster-name>.or3twdq.mongodb.net/"
+  ```
+- Update `src/config/app.config.ts`
+  ```ts
+  const appConfig = () => ({
+    ...
+    MONGODB_URI: getEnv("MONGODB_URI"),
+    ...
+  });
+  ```
+
+</details>
+
+<details>
+<summary>
+2.2 Mongoose
+</summary>
+
+- Install it with
+```sh
+bun add mongoose
+```
+
+- create `src/database/models/database.ts`
+```ts
+import mongoose from "mongoose";
+const connectDatabase = async () => {
+  try {
+    await mongoose.connect(config.MONGODB_URI);
+    console.log("MongoDB connected successfully");    
+  } catch (error) {
+    console.log("Erro connecting to database");
+    process.exit(1);
+  }
+}
+```
+
+- In `src/index.ts`
+```ts
+app.listen(config.PORT, async () => {
+  await connectDatabase();
+})
+```
+
+</details>
+
+## 3. Error Handling
+
+<details>
+<summary>
+3.1 Middleware
+</summary>
+
+- For error handling, create `src/middlewares/errorHandler.ts`
+```ts
+import { ErrorRequestHandler } from "express";
+export const ErrorHandler:ErrorRequestHandler = (error, req, res, next): any => {
+  console.error(`Error occurred: ${error.message} on path ${req.path}`);
+  return res.status(500).json({
+    message: "Internal Server Error",
+    error: error?.message || "Something went wrong",
+  });
+}
+```
+
+- and use it in `src/index.ts`
+```ts
+app.use(ErrorHandler);
 ```
 
 </details>
