@@ -183,3 +183,45 @@ app.use(ErrorHandler);
 ```
 
 </details>
+
+<details>
+<summary>
+3.2 HTTP codes
+</summary>
+
+- Create a `src\config\http.config.ts` to store the relevent HTTP codes which we can reference in other files/code.
+```ts
+const httpConfig = () => ({
+  // Success responses
+  OK: 200,
+  CREATED: 201,
+  
+  // Client error responses
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+
+  // Server error responses
+  INTERNAL_SERVER_ERROR: 500,
+});
+export const HTTPSTATUS = httpConfig();
+export type HttpStatusCode = (typeof HTTPSTATUS)[keyof typeof HTTPSTATUS];
+```
+
+- use it in `src\middlewares\errorHandler.ts` and `src\index.ts` like:
+```ts
+//errorHandler
+  if(error instanceof SyntaxError){
+    return res.status(HTTPSTATUS.BAD_REQUEST).json({
+      message: "Invalid JSON request, Please check the request body",
+    });
+  }
+
+//index.ts
+app.post("/", (req: Request, res: Response) => {
+  res.status(HTTPSTATUS.OK).json({
+    message: "Backend is running...",
+  });
+});
+```
+
+</details>

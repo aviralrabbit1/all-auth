@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { config } from './config/app.config';
 import connectDatabase from './database/models/database';
 import { ErrorHandler } from './middlewares/errorHandler';
+import { HTTPSTATUS } from './config/http.config';
 
 const app = express();
 // const BASE_PATH = config.BASE_PATH;
@@ -21,8 +22,8 @@ app.use(cors({
 
 app.use(cookieParser());
 
-app.get("/", (req: Request, res: Response) => {
-  res.status(200).json({
+app.post("/", (req: Request, res: Response) => {
+  res.status(HTTPSTATUS.OK).json({
     message: "Backend is running...",
   });
 });
